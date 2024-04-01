@@ -24,7 +24,7 @@ The repository is split into four main directories. Please see each directory fo
   -Oxygen profiles: water column oxygen concentrations measured by CTD on the SR2113 cruise.
  -Elemental sulfur: solid-phase elemental sulfur concentrations measured with UV-HPLC.
 
- 5. 16s_rRNA_seqs: 16SrRNA sequences for 4 sediment cores in the Eastern Pacific, one from the San Clemente Basin and 3 from Cocos Ridge.
+ 5. 16s_rRNA_seqs: 16S rRNA sequences for 4 sediment cores in the Eastern Pacific, one from the San Clemente Basin and 3 from Cocos Ridge.
 
  6. Extras: SR2113 sampling station coordinates and file used to construct the map.
  
