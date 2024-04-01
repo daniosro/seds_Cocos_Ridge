@@ -1,0 +1,13 @@
+﻿Identifier,Peak_Nr,Width,Ampl_64,Ampl_66,d34S
+linearity,1,42,543,2598,-0.124
+linearity,2,47.4,1816,8695,0
+linearity,3,50.4,2735,13093,0.121
+linearity,4,52.2,3317,15880,0.167
+linearity,5,54.3,4526,21674,0.316
+linearity,6,32.6,6531,31278,0.414
+linearity,1,42.8,544,2603,-0.097
+linearity,2,47.7,1818,8705,0
+linearity,3,50.8,2745,13145,0.067
+linearity,4,51.8,3319,15894,0.147
+linearity,5,54.3,4531,21701,0.265
+linearity,6,34.5,6539,31322,0.345
