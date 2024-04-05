@@ -1937,9 +1937,94 @@ head(filt_major_taxa_proportions_tab_for_plot_gc06.g2)
 # The palette with black:
 #cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
+#Now we have a table that’s easy to plug into ggplot2. 
+# First, we will visualize the total number of ASVs per core and depth.
+#Create a copy of the table for manipulation
+phylum_tab_for_plot <- data.frame(phylum_tab)
+head(phylum_tab_for_plot)
+# now we'll transform the table into narrow, or long, format
+phylum_tab_for_plot.g <- 
+  phylum_tab_for_plot %>% 
+  pivot_longer(!Phylum, names_to = "Sample", values_to = "Proportion") %>% 
+  data.frame(check.names = FALSE)
+#Add depth and core to table
+phylum_tab_for_plot.g2 <- 
+  phylum_tab_for_plot.g %>% left_join(mod_sample_info_tab)
+head(phylum_tab_for_plot.g2)
+#Replace dots by dashes in the samples names
+phylum_tab_for_plot.g2$Sample <- gsub("^[^_]*_", "", phylum_tab_for_plot.g2$Sample)
+head(phylum_tab_for_plot.g2)
+#Get total Phylum ASVs for depth
+df_sum <-
+  phylum_tab_for_plot.g2 %>%
+  group_by(Depth, Core) %>%
+  summarise(Total = sum(Proportion))
+#Filter by core
+df_sum_mc01 <- filter(df_sum, Core == "MC01")
+df_sum_gc02 <- filter(df_sum, Core == "GC02")
+df_sum_gc04 <- filter(df_sum, Core == "GC04")
+df_sum_gc06 <- filter(df_sum, Core == "GC06")
+#Rearrange the tables of each core by depth
+df_sum_mc01 <- df_sum_mc01[order(as.numeric(df_sum_mc01$Depth)),]
+df_sum_gc02 <- df_sum_gc02[order(as.numeric(df_sum_gc02$Depth)),]
+df_sum_gc04 <- df_sum_gc04[order(as.numeric(df_sum_gc04$Depth)),]
+df_sum_gc06 <- df_sum_gc06[order(as.numeric(df_sum_gc06$Depth)),]
+#Convert depth to numeric
+df_sum_mc01$Depth<- as.numeric(as.character(df_sum_mc01$Depth))
+df_sum_gc02$Depth<- as.numeric(as.character(df_sum_gc02$Depth))
+df_sum_gc04$Depth<- as.numeric(as.character(df_sum_gc04$Depth))
+df_sum_gc06$Depth<- as.numeric(as.character(df_sum_gc06$Depth))
+#Make plot
+#MC01
+df_sum_mc01 %>% 
+  mutate(Depth = factor(as.numeric(Depth), levels = unique(as.numeric(Depth)))) %>% 
+  ggplot(aes(x = Depth, y = Total)) +
+  geom_bar(width = 0.6, stat = "identity") +
+  scale_y_continuous(breaks=c(600,1000,2000,3000,4000,5000,6000,7000))
+theme_bw() +
+  theme(axis.text.x = element_text(size=12, angle = 45, hjust = 1), 
+        axis.text.y = element_text(size=12), axis.title = element_text(size=14), 
+        legend.title = element_blank()) +
+  labs(x = "Depth (cm)", y = "Total ASVs") 
+
+#GC02
+df_sum_gc02 %>% 
+  mutate(Depth = factor(as.numeric(Depth), levels = unique(as.numeric(Depth)))) %>% 
+  ggplot(aes(x = Depth, y = Total)) +
+  geom_bar(width = 0.6, stat = "identity") +
+  scale_y_continuous(breaks=c(600,1000,2000,3000,4000,5000,6000,7000))
+theme_bw() +
+  theme(axis.text.x = element_text(size=12, angle = 45, hjust = 1), 
+        axis.text.y = element_text(size=12), axis.title = element_text(size=14), 
+        legend.title = element_blank()) +
+  labs(x = "Depth (cm)", y = "Total ASVs") 
+
+#GC04
+df_sum_gc04 %>% 
+  mutate(Depth = factor(as.numeric(Depth), levels = unique(as.numeric(Depth)))) %>% 
+  ggplot(aes(x = Depth, y = Total)) +
+  geom_bar(width = 0.6, stat = "identity") +
+  scale_y_continuous(breaks=c(600,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,11000,12000,13000))
+theme_bw() +
+  theme(axis.text.x = element_text(size=12, angle = 45, hjust = 1), 
+        axis.text.y = element_text(size=12), axis.title = element_text(size=14), 
+        legend.title = element_blank()) +
+  labs(x = "Depth (cm)", y = "Total ASVs") 
+
+#GC06
+df_sum_gc06 %>% 
+  mutate(Depth = factor(as.numeric(Depth), levels = unique(as.numeric(Depth)))) %>% 
+  ggplot(aes(x = Depth, y = Total)) +
+  geom_bar(width = 0.6, stat = "identity") +
+  scale_y_continuous(breaks=c(600,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,11000,12000,13000))
+theme_bw() +
+  theme(axis.text.x = element_text(size=12, angle = 45, hjust = 1), 
+        axis.text.y = element_text(size=12), axis.title = element_text(size=14), 
+        legend.title = element_blank()) +
+  labs(x = "Depth (cm)", y = "Total ASVs") 
 
 
-#Now we have a table that’s easy to plug into ggplot2. One common way to visualize this is with stacked bar charts:
+#Now we will make stacked bar charts:
 #Define color palette
 cbbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
                 "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#E69F00","#004949","#009292","#ff6db6","#924900",
@@ -3870,7 +3955,7 @@ ggplot(filt_major_taxa_proportions_tab_for_plot.g2, aes(x = " ", y = Proportion,
 # Betadisperser and permutational ANOVA
 # One way we can integrate this info is with a permutational ANOVA test to see 
 # if any of the available information correlates with overall community structure (based on our ASVs, not taxonomy).
-# Here we are going to test if there is a statistically significant difference between our dates or our depth bins.
+# Here we are going to test if there is a statistically significant difference between the cores or the depth bins.
 #Calculate significance difference between intragroup variants
 anova(betadisper(euc_dist, sample_info_tab$core))
 #Checking by core, we get a significant result (5.7 e-6) from the betadisper test. 
